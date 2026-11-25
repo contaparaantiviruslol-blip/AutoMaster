@@ -1,0 +1,21 @@
+# Builds the Windows VST3 on GitHub's servers (no local compiler needed).
+# Push this folder to a GitHub repository, open the "Actions" tab, wait for the green tick,
+# then download the "AutoMaster-VST3-Windows" artifact and copy AutoMaster.vst3 to
+# C:\Program Files\Common Files\VST3\
+name: Build AutoMaster
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64
+      - name: Build VST3
+        run: cmake --build build --config Release --target AutoMaster_VST3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AutoMaster-VST3-Windows
+          path: build/AutoMaster_artefacts/Release/VST3/AutoMaster.vst3
